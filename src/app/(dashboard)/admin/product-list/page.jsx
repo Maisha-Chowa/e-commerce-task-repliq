@@ -1,14 +1,21 @@
-import ManageDonationTable from "@/components/ui/ManageDonationTable";
-import { getAllDonations } from "@/utils/getAllDonations";
-
+import Products from "../../../../components/ui/Products";
 const ManageProductPage = async () => {
-  // const { data } = await getAllDonations();
+  const res = await fetch(`${process.env.BACKEND_URL}/eyeglass`, {
+    cache: "no-store",
+  });
+  const data = await res.json();
+
   // console.log(data);
+
   return (
-    <p>This Product list</p>
-    // <div className="bg-gray-200 lg:p-6 md:p-6 p-4 rounded-xl lg:min-h-screen">
-    //   <ManageDonationTable donations={data} />
-    // </div>
+    <div>
+      <div className="my-12">
+        <h1 className="text-center text-6xl">
+          <span className="text-blue-950">All Products </span>
+        </h1>
+      </div>
+      <Products products={data?.data} />
+    </div>
   );
 };
 

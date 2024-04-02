@@ -4,20 +4,16 @@ import { useState } from "react";
 import { DeleteFilled, PlusOutlined, EditOutlined } from "@ant-design/icons";
 import { useRouter } from "next/navigation";
 import { AnyObject } from "antd/es/_util/type";
-import { TAddDonationFormValues } from "./AddDonationForm";
+import { TAddDonationFormValues } from "./AddProductForm";
 import { deleteDonation } from "@/utils/actions/crud-donation";
 
-const ManageDonationTable = ({
-  donations,
-}: {
-  donations: TAddDonationFormValues[];
-}) => {
+const ManageDonationTable = ({ donations }) => {
   const router = useRouter();
 
-  const handleDeleteWithConfirmation = (id: string) => {
+  const handleDeleteWithConfirmation = (id) => {
     console.log("donation id", id);
     const handleOk = async () => {
-      await deleteDonation(id)
+      await deleteDonation(id);
     };
 
     Modal.confirm({
@@ -37,7 +33,7 @@ const ManageDonationTable = ({
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(5);
 
-  const handleTableChange = (pagination: any) => {
+  const handleTableChange = (pagination) => {
     setCurrentPage(pagination.current);
     setPageSize(pagination.pageSize);
   };
@@ -46,8 +42,7 @@ const ManageDonationTable = ({
     {
       title: "No.",
       key: "no",
-      render: (text: any, record: AnyObject, index: number) =>
-        index + 1 + (currentPage - 1) * pageSize,
+      render: (text, record, index) => index + 1 + (currentPage - 1) * pageSize,
     },
 
     {
@@ -73,7 +68,7 @@ const ManageDonationTable = ({
     {
       title: "Action",
       key: "action",
-      render: (record: AnyObject) => {
+      render: (record) => {
         return (
           <div>
             <Button
