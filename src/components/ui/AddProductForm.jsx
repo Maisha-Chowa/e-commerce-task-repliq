@@ -1,168 +1,186 @@
 "use client";
 
-import { FormEvent, useRef } from "react";
+import { Button, Form, Input, message, Select } from "antd";
 
 const AddProductForm = () => {
-  const nameRef = useRef < HTMLInputElement > null;
-  const priceRef = useRef < HTMLInputElement > null;
-  const quantityRef = useRef < HTMLInputElement > null;
-  const imageRef = useRef < HTMLInputElement > null;
-  const frameMaterialRef = useRef < HTMLOptionElement > null;
-  const frameShapeRef = useRef < HTMLOptionElement > null;
-  const lensTypeRef = useRef < HTMLOptionElement > null;
-  const brandRef = useRef < HTMLInputElement > null;
-  const genderRef = useRef < HTMLOptionElement > null;
-  const colorRef = useRef < HTMLInputElement > null;
+  const [form] = Form.useForm();
+  const onFinish = async (values) => {
+    const res = await fetch(`${process.env.BACKEND_URL}/eyeglass/create`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(values),
+      cache: "no-cache",
+    });
+    const productInfo = await res.json();
+    console.log(productInfo);
 
-  const [postEyeGlass, { isLoading, isError, isSuccess }] =
-    usePostEyeGlassMutation();
-  console.log(isLoading);
-  console.log(isError);
-  console.log(isSuccess);
-
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    const name = nameRef?.current?.value;
-    const price = priceRef?.current?.value;
-    const quantity = quantityRef?.current?.value;
-    const image = imageRef?.current?.value;
-    const frameMaterial = frameMaterialRef?.current?.value;
-    const frameShape = frameShapeRef?.current?.value;
-    const lensType = lensTypeRef?.current?.value;
-    const brand = brandRef?.current?.value;
-    const gender = genderRef?.current?.value;
-    const color = colorRef?.current?.value;
-
-    const inputValue = {
-      name,
-      price,
-      quantity,
-      image,
-      frameMaterial,
-      frameShape,
-      lensType,
-      brand,
-      gender,
-      color,
-    };
-    console.log(inputValue);
-
-    const options = {
-      data: inputValue,
-    };
-
-    console.log(options.data);
-    await postEyeGlass(options.data);
-    event.target.reset();
+    if (productInfo.success) {
+      message.success("product created successfully");
+    }
   };
+  const onFinishFailed = (errorInfo) => {
+    console.log("Failed:", errorInfo);
+  };
+
   return (
-    <div className="max-w-5xl mx-auto mt-5">
-      <h2 className="text-3xl font-semibold p-5 text-center text-amber-300">
-        {" "}
-        Add New Eye Glass
-      </h2>
-      <form onSubmit={handleSubmit} className="my-12">
-        <div className="grid gap-2">
-          <div className="grid gap-1">
-            <input
-              className="input input-bordered"
-              id="name"
-              placeholder="name"
-              type="text"
-              ref={nameRef}
-            />
-            <input
-              className="input input-bordered"
-              id="price"
-              placeholder="price"
-              type="text"
-              ref={priceRef}
-            />
-            <input
-              className="input input-bordered"
-              id="quantity"
-              placeholder="quantity"
-              type="text"
-              ref={quantityRef}
-            />
-            <input
-              className="input input-bordered"
-              id="image"
-              placeholder="image"
-              type="text"
-              ref={imageRef}
-            />
-            <label className="font-bold  text-amber-300">Frame Material</label>
-            <select className="input input-bordered" id="frameMaterial">
-              <option ref={frameMaterialRef} value="plastic">
-                Plastic
-              </option>
-              <option ref={frameMaterialRef} value="acetate">
-                Acetate
-              </option>
-              <option ref={frameMaterialRef} value="metal">
-                Metal
-              </option>
-            </select>
-            <label className="font-bold  text-amber-300">Frame Shape</label>
-            <select className="input input-bordered" id="frameShape">
-              <option ref={frameShapeRef} value="rectangular">
-                Rectangular
-              </option>
-              <option ref={frameShapeRef} value="round">
-                Round
-              </option>
-              <option ref={frameShapeRef} value="cat-eye">
-                Cat-Eye
-              </option>
-            </select>
-            <label className="font-bold  text-amber-300">Lens Type</label>
-            <select className="input input-bordered" id="lensType">
-              <option ref={lensTypeRef} value="single-vision">
-                single-vision
-              </option>
-              <option ref={lensTypeRef} value="bifocal">
-                bifocal
-              </option>
-              <option ref={lensTypeRef} value="progressive">
-                progressive
-              </option>
-            </select>
-            <input
-              className="input input-bordered"
-              id="brand"
-              placeholder="brand"
-              type="text"
-              ref={brandRef}
-            />
-            <label className="font-bold  text-amber-300">Gender</label>
-            <select className="input input-bordered" id="gender">
-              <option ref={genderRef} value="men">
-                Men
-              </option>
-              <option ref={genderRef} value="women">
-                Women
-              </option>
-              <option ref={genderRef} value="unisex">
-                unisex
-              </option>
-            </select>
-            <input
-              className="input input-bordered"
-              id="color"
-              placeholder="Color"
-              type="text"
-              ref={colorRef}
-            />
-          </div>
-          <button
-            type="submit"
-            className="rounded-full h-15 w-15 p-2 text-1xl  bg-amber-300 text-slate-600 font-bold font-bold"
+    <div className="bg-gray-200 lg:p-8 md:p-6 p-4 rounded-xl lg:min-h-screen">
+      <div className="max-w-xl shadow-xl bg-white mx-auto">
+        <h1 className="text-center text-xl py-6 bg-blue-950 text-white">
+          Add Product
+        </h1>
+        <Form
+          layout="vertical"
+          name="basic"
+          onFinish={onFinish}
+          onFinishFailed={onFinishFailed}
+          autoComplete="off"
+          className="px-10"
+          form={form}
+        >
+          <Form.Item
+            label="Product Title"
+            name="name"
+            rules={[{ required: true, message: "Please input product title!" }]}
           >
-            Add Eye Glass
-          </button>
-        </div>
-      </form>
+            <Input
+              type="text"
+              size="large"
+              className="text-black"
+              style={{ width: 300, padding: 10, margin: 4 }}
+            />
+          </Form.Item>
+          <Form.Item
+            label="Price"
+            name="price"
+            rules={[{ required: true, message: "Please input product price!" }]}
+          >
+            <Input type="text" size="large" className="text-black" />
+          </Form.Item>
+          <Form.Item
+            label="Quantity"
+            name="quantity"
+            rules={[{ required: true, message: "Please input quantity!" }]}
+          >
+            <Input type="text" size="large" className="text-black" />
+          </Form.Item>
+          <Form.Item
+            label="Image"
+            name="image"
+            rules={[{ required: true, message: "Please input product image!" }]}
+          >
+            <Input type="text" size="large" className="text-black" />
+          </Form.Item>
+          <Form.Item
+            label="Frame Material"
+            name="frameMaterial"
+            rules={[
+              {
+                required: true,
+                message: "Please input product frameMaterial!",
+              },
+            ]}
+          >
+            <Select
+              defaultValue="plastic"
+              // style={{ width: 120 }}
+              options={[
+                { value: "plastic", label: "  plastic" },
+                { value: "acetate", label: " acetate" },
+                { value: "metal", label: "metal" },
+              ]}
+            />
+          </Form.Item>
+          <Form.Item
+            label="Frame Shape"
+            name="frameShape"
+            rules={[
+              { required: true, message: "Please input product Frame Shape!" },
+            ]}
+          >
+            <Select
+              defaultValue="rectangular"
+              // style={{ width: 120 }}
+              options={[
+                { value: "rectangular", label: "  Rectangular" },
+                { value: "round", label: " Round" },
+                { value: "cat-eye", label: "cat-eye" },
+              ]}
+            />
+          </Form.Item>
+          <Form.Item
+            label="Lens Type"
+            name="lensType"
+            rules={[
+              {
+                required: true,
+                message: "Please input product Lens Type!",
+              },
+            ]}
+          >
+            <Select
+              defaultValue="single-vision"
+              // style={{ width: 120 }}
+              options={[
+                { value: "single-vision", label: "single-vision" },
+                { value: "bifocal", label: " bifocal" },
+                { value: "progressive", label: "progressive" },
+              ]}
+            />
+          </Form.Item>
+          <Form.Item
+            label="Brand"
+            name="brand"
+            rules={[
+              {
+                required: true,
+                message: "Please input product brand!",
+              },
+            ]}
+          >
+            <Input type="text" size="large" className="text-black" />
+          </Form.Item>
+          <Form.Item
+            label="Gender"
+            name="gender"
+            rules={[
+              {
+                required: true,
+                message: "Please input product gender!",
+              },
+            ]}
+          >
+            <Select
+              defaultValue="men"
+              // style={{ width: 120 }}
+              options={[
+                { value: "men", label: "men" },
+                { value: "women", label: " women" },
+                { value: "unisex", label: "unisex" },
+              ]}
+            />
+          </Form.Item>
+          <Form.Item
+            label="Color"
+            name="color"
+            rules={[{ required: true, message: "Please input product color!" }]}
+          >
+            <Input type="text" size="large" className="text-black" />
+          </Form.Item>
+
+          <Form.Item>
+            <Button
+              className="text-white bg-blue-950"
+              htmlType="submit"
+              block
+              size="large"
+            >
+              Add Now
+            </Button>
+          </Form.Item>
+        </Form>
+      </div>
     </div>
   );
 };

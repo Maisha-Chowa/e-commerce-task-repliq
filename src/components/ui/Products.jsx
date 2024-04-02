@@ -32,7 +32,7 @@ const Products = ({ products }) => {
             {product?.frameMaterial}
           </p>
           <Link
-            href={`/products/${product._id}`}
+            href={`/admin/product-list/${product._id}`}
             className="mt-2 w-full text-right"
           >
             <button className="text-white bg-blue-950 p-2 rounded text-lg">

@@ -4,9 +4,6 @@ const ManageProductPage = async () => {
     cache: "no-store",
   });
   const data = await res.json();
-
-  // console.log(data);
-
   return (
     <div>
       <div className="my-12">
